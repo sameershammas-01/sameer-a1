@@ -188,10 +188,16 @@ button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visib
 .orbit-dashes { stroke: var(--ink); stroke-width: 1; stroke-dasharray: 2 24; opacity: .28; }
 .motion-speed-lines { stroke: var(--accent); stroke-width: 2; stroke-linecap: round; opacity: .6; }
 .motion-spark { transform-box: view-box; transform-origin: 13% 18.4%; stroke: var(--ink); stroke-width: 1.5; opacity: .7; }
-.hero-product { position: absolute; inset: 5% 5% 9%; width: 90%; height: 86%; min-width: 0; min-height: 0; max-width: none; object-fit: contain; mix-blend-mode: multiply; }
-.hero-seal { position: absolute; top: 11%; right: 8px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px; width: 76px; height: 76px; border-radius: 50%; background: var(--ink); color: white; }
+/* Match the bitmap's existing square drawing area, then keep only the tub.
+   This contour belongs to the current Exalt photo; its original pixels stay intact.
+   A separate transparent gradient replaces the photo's baked-in shadow. */
+.hero-product-shadow { position: absolute; top: 72%; left: 18%; width: 64%; height: 8%; background: radial-gradient(ellipse, #17181666 0%, #17181626 32%, #17181600 70%); pointer-events: none; }
+.hero-product { --hero-product-cutout: polygon(46.6111% 10.7639%, 39.2500% 11.1806%, 34.9444% 11.7361%, 30.9167% 12.5694%, 28.4167% 13.4028%, 28.0000% 13.6806%, 27.4444% 14.5139%, 27.4444% 16.0417%, 27.3056% 16.1806%, 27.3056% 21.4583%, 27.4444% 21.5972%, 27.4444% 22.9861%, 27.7222% 23.4028%, 27.7222% 23.9583%, 27.4444% 24.2361%, 27.5833% 52.7083%, 27.7222% 52.8472%, 27.7222% 59.5139%, 27.8611% 59.6528%, 27.7222% 60.4861%, 27.8611% 60.6250%, 27.8611% 64.0972%, 28.0000% 64.2361%, 27.8611% 64.9306%, 28.2778% 65.7639%, 28.2778% 66.5972%, 28.9722% 67.2917%, 29.1111% 67.7083%, 31.0556% 69.3750%, 31.6111% 69.9306%, 31.7500% 70.4861%, 32.8611% 71.4583%, 34.8056% 72.1528%, 38.6944% 72.9861%, 44.8056% 73.5417%, 56.3056% 73.5417%, 63.1111% 72.7083%, 65.4722% 72.1528%, 67.2778% 71.4583%, 68.3889% 70.4861%, 68.3889% 70.2083%, 71.7222% 66.8750%, 71.8611% 66.0417%, 72.2778% 65.0694%, 72.1389% 61.1806%, 72.2778% 61.0417%, 72.2778% 59.3750%, 72.4167% 59.2361%, 72.4167% 56.7361%, 72.5556% 56.5972%, 72.5556% 49.9306%, 72.6944% 49.7917%, 72.5556% 49.3750%, 72.5556% 48.4028%, 72.6944% 48.2639%, 72.5556% 45.6250%, 72.6944% 45.2083%, 72.5556% 44.6528%, 72.6944% 44.5139%, 72.6944% 42.8472%, 72.5556% 42.4306%, 72.6944% 42.0139%, 72.5556% 41.4583%, 72.6944% 40.7639%, 72.5556% 40.3472%, 72.6944% 40.2083%, 72.6944% 39.5139%, 72.5556% 38.9583%, 72.6944% 38.8194%, 72.6944% 37.4306%, 72.5556% 37.0139%, 72.6944% 36.8750%, 72.6944% 33.8194%, 72.5556% 33.4028%, 72.6944% 33.2639%, 72.6944% 24.0972%, 72.5556% 23.9583%, 72.5556% 23.1250%, 72.6944% 22.9861%, 72.6944% 14.5139%, 72.0000% 13.4028%, 68.2500% 12.2917%, 65.4722% 11.7361%, 61.1667% 11.1806%, 54.2222% 10.7639%); position: absolute; inset: 5% 7% 9%; width: 86%; height: 86%; min-width: 0; min-height: 0; max-width: none; object-fit: contain; -webkit-clip-path: var(--hero-product-cutout); clip-path: var(--hero-product-cutout); mix-blend-mode: multiply; }
+.hero-seal { position: absolute; top: 11%; right: 8px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px; width: 76px; height: 76px; padding: 10px; border-radius: 50%; background: var(--ink); color: white; }
 .hero-seal .icon { width: 21px; height: 21px; color: var(--orange); }
-.hero-seal span { font-size: 6px; line-height: 1.6; letter-spacing: .04em; text-align: center; }
+/* Fixed SVG lines scale with the badge instead of being independently
+   enlarged or wrapped by a phone's text autosizing. Page zoom still works. */
+.hero-seal-copy { display: block; flex: 0 0 auto; width: 56px; height: 21px; fill: currentColor; stroke: none; font-family: var(--body); font-size: 8px; font-weight: 400; letter-spacing: .16px; text-anchor: middle; }
 .product-tag { position: absolute; bottom: 17%; left: 0; display: flex; align-items: center; gap: 9px; padding: 11px 13px; background: white; border: 1px solid var(--line); box-shadow: 0 8px 24px #1718160a; }
 .product-tag strong { display: block; font-size: 10px; letter-spacing: .03em; }
 .product-tag div > span { display: block; font-size: 8px; color: var(--muted); }
@@ -394,7 +400,7 @@ dialog::backdrop { background: #151911ad; }
   .hero-foot-mark { padding-right: 18px; border-right: 1px solid var(--line); color: var(--ink); font: italic 800 32px/1 var(--heading); }
   .hero-visual { max-width: none; }
   .hero-seal { width: 88px; height: 88px; }
-  .hero-seal span { font-size: 7px; }
+  .hero-seal-copy { width: 64px; height: 24px; }
   .product-tag { padding: 13px 15px; }
   .product-tag strong { font-size: 10px; }
   .product-tag div > span { font-size: 9px; }
@@ -739,9 +745,13 @@ dialog { overflow-y: auto; }
           <g class="motion-speed-lines"><path d="m382 410 52-52" /><path d="m404 424 43-43" /><path d="m426 438 32-32" /></g>
           <path class="motion-spark" d="M65 78v28M51 92h28M56 83l18 18M56 101l18-18" />
         </svg>
+        <span class="hero-product-shadow" aria-hidden="true"></span>
         <svg aria-label="Exalt The Mettle Tri Creatine 300g supplement tub" role="img" focusable="false" viewBox="0 0 720 720" data-asset-id="a1-image-exalt-mettle" data-asset="/assets/exalt-720.6e81751c24d4.webp" height="720" width="720" class="hero-product asset-image"><title>Exalt The Mettle Tri Creatine 300g supplement tub</title><use href="#a1-image-exalt-mettle" /></svg>
         <div class="product-tag"><span class="tag-dot"></span><div><strong>EXALT THE METTLE</strong><span>TRI CREATINE · 300 G</span></div><svg class="icon" aria-hidden="true"><use href="#i-up" /></svg></div>
-        <div class="hero-seal"><svg class="icon" aria-hidden="true"><use href="#i-star" /></svg><span>BUILT AROUND<br>YOUR AMBITION</span></div>
+        <div class="hero-seal" role="img" aria-label="Built around your ambition">
+          <svg class="icon" aria-hidden="true"><use href="#i-star" /></svg>
+          <svg class="hero-seal-copy" viewBox="0 0 70 26" aria-hidden="true" focusable="false"><text x="35" y="9">BUILT AROUND</text><text x="35" y="21">YOUR AMBITION</text></svg>
+        </div>
         <span class="visual-caption">CONSISTENCY IS THE REAL GAME CHANGER.</span>
       </div>
     </section>
