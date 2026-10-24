@@ -912,7 +912,7 @@ html:not([data-input-mode="pointer"]) :is(input, textarea, select):focus-visible
 /* One gentle entrance per card. Product opacity stays at 1 throughout. */
 .product-card { opacity: 1; }
 @keyframes a1-card-enter {
-  from { transform: translateY(18px) scale(.99); }
+  from { transform: perspective(1000px) translateY(20px) rotateX(5deg) scale(.99); }
   to { transform: translateY(0) scale(1); }
 }
 @media (prefers-reduced-motion: no-preference) {
@@ -924,6 +924,7 @@ html:not([data-input-mode="pointer"]) :is(input, textarea, select):focus-visible
 /* Keep the artwork and its caption in separate rows. */
 .hero-visual { display: grid; grid-template-columns: minmax(0, 1fr); gap: 12px; aspect-ratio: auto; }
 .hero-artwork { position: relative; isolation: isolate; width: 100%; min-width: 0; aspect-ratio: 1; overflow: hidden; }
+.hero-visual > .product-tag > .icon { margin-left:auto; }
 .hero-visual > .visual-caption { position: static; justify-self: end; padding-right: 5%; line-height: 1.5; }
 .hero-artwork .hero-motion-graphic { z-index: 0; }
 .hero-artwork .hero-product-shadow, .hero-artwork .hero-product { z-index: 1; }
@@ -1049,6 +1050,62 @@ html:not([data-input-mode="pointer"]) :is(.filters .filter, .desktop-nav a, .mob
   from { transform: translateX(-20%); }
   to { transform: translateX(20%); }
 }
+
+/* A dimensional product stage, with transform-only motion on isolated layers. */
+.hero-artwork { border-radius: 32px; background: radial-gradient(ellipse at 48% 45%,#ffedbd 0%,#f5edda 46%,#eeeee7 74%); border: 1px solid #fff; box-shadow: inset 0 1px 0 #fff, 0 18px 42px #1718160b; perspective: 1000px; }
+.hero-scene { position: absolute; inset: 0; perspective:1000px; transform-style:flat; transform: rotateX(var(--tilt-x,0deg)) rotateY(var(--tilt-y,0deg)); transition: transform .5s cubic-bezier(.2,.7,.2,1); }
+.hero-artwork .hero-circle { width: 66%; top: 15%; left: 17%; background: radial-gradient(circle at 32% 25%,#fff5cf 0%,#ffd05d 28%,#f5a80d 61%,#bb7008 100%); box-shadow: inset -16px -18px 32px #a9641540, inset 8px 6px 20px #ffffff85; transform: translateZ(-28px); }
+.hero-circle .circle-outline { border-color:#ffffff80; inset:6%; }
+.hero-circle .circle-type { font-size:clamp(160px,31vw,300px); inset:14% auto auto 5%; color:#ffffff24; }
+.hero-artwork .hero-motion-graphic { display:none; }
+.hero-artwork .hero-product { inset:-4%; width:108%; height:108%; z-index:3; mix-blend-mode:normal; transform-origin:50% 46%; transform:translate3d(0,-8px,38px) rotateY(-15deg) rotateZ(-6deg); }
+.hero-plinth { position:absolute; left:15%; top:76%; width:70%; height:10%; border-radius:50%; background:linear-gradient(90deg,#b27614,#ffe6a5 35%,#f6bc38 68%,#ae6c07); box-shadow:0 12px 0 #c48c29,0 14px 0 #ffebbb,0 24px 24px #664b1c26; z-index:1; }
+.hero-plinth::before { content:''; position:absolute; inset:2px; border-radius:50%; background:radial-gradient(ellipse at 42% 30%,#fff9e5,#f1d39a 62%,#dbac58); border:1px solid #fff6dc; }
+.hero-artwork .hero-product-shadow { top:75%; left:25%; width:50%; height:8%; z-index:2; }
+.hero-depth-ring { position:absolute; inset:12% 6%; border:2px solid #ffffffc7; border-top:3px solid #ba7b18; border-bottom:3px solid #f8ae27; border-radius:50%; pointer-events:none; transform:rotateX(62deg) rotateY(-18deg) rotateZ(-25deg); z-index:2; }
+.hero-depth-ring::before,.hero-depth-ring::after { content:''; position:absolute; width:16px; height:16px; border-radius:50%; background:radial-gradient(circle at 30% 25%,#fff9d5,#f8b221 55%,#986006); box-shadow:0 2px 5px #7a4e1633; }
+.hero-depth-ring::before { top:-9px; left:48%; }
+.hero-depth-ring::after { bottom:-9px; left:48%; width:10px; height:10px; }
+.hero-depth-ring--cross { inset:7% 12%; border-color:#17181626; border-left:2px solid #f6b43c; transform:rotateX(-24deg) rotateY(64deg) rotateZ(30deg); z-index:0; }
+.hero-depth-ring--cross::before { background:radial-gradient(circle at 30% 25%,#64645a,#171816 75%); }
+.hero-visual > .product-tag { position:static; width:100%; max-width:100%; padding:14px 18px; gap:10px; border-radius:20px; background:linear-gradient(130deg,#fffdf6f5,#fff5dbf0); box-shadow:inset 0 1px 0 #fff,0 8px 24px #79531712; z-index:4; }
+.hero-artwork .hero-seal { top:5%; right:5%; width:76px; height:76px; z-index:4; box-shadow:0 8px 20px #17181621; }
+.hero-visual > .visual-caption { justify-self:stretch; display:flex; justify-content:space-between; align-items:center; padding:0 6px; gap:12px; }
+.motion-toggle { display:inline-grid; place-items:center; width:44px; height:44px; flex:0 0 44px; border:1px solid #fff; border-radius:50%; background:linear-gradient(135deg,#fff,#ebe8df); color:var(--ink); cursor:pointer; box-shadow:0 3px 12px #1718160a; }
+.motion-toggle svg { width:18px; height:18px; fill:currentColor; }
+.motion-toggle .motion-play { display:none; }
+.motion-toggle[aria-pressed="true"] .motion-play { display:block; }
+.motion-toggle[aria-pressed="true"] .motion-pause { display:none; }
+.motion-toggle:focus-visible { background:#ffd777; box-shadow:0 0 0 4px #f8a61333; }
+html.user-motion-paused [data-ambient-motion] * { animation-play-state:paused!important; }
+@keyframes a1-product-depth {
+  0%,100% { transform:translate3d(-4px,2px,22px) rotateX(4deg) rotateY(-18deg) rotateZ(-7deg); }
+  50% { transform:translate3d(5px,-22px,50px) rotateX(-4deg) rotateY(18deg) rotateZ(6deg); }
+}
+@keyframes a1-ring-depth {
+  from { transform:rotateX(62deg) rotateY(-18deg) rotateZ(-25deg); }
+  to { transform:rotateX(62deg) rotateY(-18deg) rotateZ(335deg); }
+}
+@keyframes a1-ring-cross {
+  from { transform:rotateX(-24deg) rotateY(64deg) rotateZ(30deg); }
+  to { transform:rotateX(-24deg) rotateY(64deg) rotateZ(-330deg); }
+}
+@keyframes a1-depth-shadow { 0%,100% { transform:scaleX(1); opacity:.65; } 50% { transform:scaleX(.72); opacity:.3; } }
+@media (prefers-reduced-motion:no-preference) {
+  html.motion-ready .hero-visual .hero-product { animation:a1-product-depth 5.6s ease-in-out infinite; animation-play-state:var(--graphics-play-state,paused); }
+  html.motion-ready .hero-depth-ring { animation:a1-ring-depth 12s linear infinite; animation-play-state:var(--graphics-play-state,paused); }
+  html.motion-ready .hero-depth-ring--cross { animation-name:a1-ring-cross; animation-duration:18s; }
+  html.motion-ready .hero-product-shadow { animation:a1-depth-shadow 5.6s ease-in-out infinite; animation-play-state:var(--graphics-play-state,paused); }
+  .product-image-wrap { transform:perspective(900px) rotateX(var(--tilt-x,0deg)) rotateY(var(--tilt-y,0deg)); transition:transform .4s cubic-bezier(.2,.7,.2,1); }
+}
+@media(max-width:600px) { .hero-artwork { border-radius:26px; } .hero-visual > .product-tag strong { font-size:16px; } .hero-visual > .product-tag span { font-size:10px; } .hero-artwork .hero-product { inset:-1%; width:102%; height:102%; } .hero-artwork .hero-seal { width:58px; height:58px; right:3%; padding:6px; } .hero-seal-copy { width:44px; height:17px; } .hero-artwork .hero-seal .icon { width:18px; height:18px; } }
+@media(prefers-reduced-motion:reduce) {
+  .hero-scene,.product-image-wrap { transform:none!important; transition:none!important; }
+  .hero-visual .hero-product { animation:none!important; transform:translateY(-6px) rotateZ(-4deg)!important; }
+  .hero-depth-ring,.hero-product-shadow { animation:none!important; }
+  .motion-toggle { display:none; }
+}
+
 </style>
   
   <script type="application/ld+json">[{"@context":"https://schema.org","@type":"Organization","@id":"https://sameer-a1.sldemonwarrior-2011.workers.dev/#organization","name":"A1 Nutra Lab","url":"https://sameer-a1.sldemonwarrior-2011.workers.dev/","logo":"https://static-01.daraz.lk/other/shop/9155f780268a0ee1900229898f76651b.png","sameAs":["https://www.instagram.com/a1nutralab/","https://www.daraz.lk/shop/xj2ynd50/","https://www.facebook.com/A1nutralab/"],"telephone":"+94775532214"},{"@context":"https://schema.org","@type":"ItemList","itemListElement":[{"@type":"ListItem","position":1,"url":"https://sameer-a1.sldemonwarrior-2011.workers.dev/#product-exalt-mettle","name":"Exalt THE METTLE TRI CREATINE"},{"@type":"ListItem","position":2,"url":"https://sameer-a1.sldemonwarrior-2011.workers.dev/#product-wellcore-creatine","name":"Wellcore MICRONISED CREATINE"},{"@type":"ListItem","position":3,"url":"https://sameer-a1.sldemonwarrior-2011.workers.dev/#product-muscleblaze-creamp","name":"MuscleBlaze CREAMP MICRONISED CREATINE"},{"@type":"ListItem","position":4,"url":"https://sameer-a1.sldemonwarrior-2011.workers.dev/#product-blexs-appetite","name":"Blexs Nutrition APPETITE XXL"},{"@type":"ListItem","position":5,"url":"https://sameer-a1.sldemonwarrior-2011.workers.dev/#product-blexs-maca","name":"Blexs Nutrition MACA CURVES"},{"@type":"ListItem","position":6,"url":"https://sameer-a1.sldemonwarrior-2011.workers.dev/#product-blexs-testo","name":"Blexs Nutrition TESTO BOOST"},{"@type":"ListItem","position":7,"url":"https://sameer-a1.sldemonwarrior-2011.workers.dev/#product-wellcore-122","name":"Wellcore MICRONISED CREATINE 122 G"},{"@type":"ListItem","position":8,"url":"https://sameer-a1.sldemonwarrior-2011.workers.dev/#product-muscleblaze-creamp-range","name":"MuscleBlaze CREAMP CREATINE — WATERMELON"}]}]</script>
@@ -1144,6 +1201,7 @@ html.menu-motion-active [data-ambient-motion] * { animation-play-state: paused !
       </div>
       <div class="hero-visual" data-ambient-motion="">
         <div class="hero-artwork">
+        <div class="hero-scene">
         <div class="hero-circle"><span class="circle-outline"></span><span class="circle-type" aria-hidden="true">A1</span></div>
         <svg class="hero-motion-graphic" viewBox="0 0 500 500" aria-hidden="true" focusable="false">
           <g class="motion-orbit motion-orbit-outer">
@@ -1159,15 +1217,20 @@ html.menu-motion-active [data-ambient-motion] * { animation-play-state: paused !
           <g class="motion-speed-lines"><path d="m382 410 52-52" /><path d="m404 424 43-43" /><path d="m426 438 32-32" /></g>
           <path class="motion-spark" d="M65 78v28M51 92h28M56 83l18 18M56 101l18-18" />
         </svg>
+        <span class="hero-depth-ring" aria-hidden="true"></span>
+        <span class="hero-depth-ring hero-depth-ring--cross" aria-hidden="true"></span>
+        <span class="hero-plinth" aria-hidden="true"></span>
         <span class="hero-product-shadow" aria-hidden="true"></span>
         <svg aria-label="Exalt The Mettle Tri Creatine 300g supplement tub" role="img" focusable="false" viewBox="0 0 720 720" data-asset-id="a1-image-exalt-mettle" data-asset="/assets/exalt-720.6e81751c24d4.webp" height="720" width="720" class="hero-product asset-image"><title>Exalt The Mettle Tri Creatine 300g supplement tub</title><use href="#a1-image-exalt-mettle" /></svg>
-        <a class="product-tag" href="#product-exalt-mettle" aria-label="View Exalt The Mettle product details"><span class="tag-dot"></span><div><strong>EXALT THE METTLE</strong><span>TRI CREATINE · 300 G</span></div><svg class="icon" aria-hidden="true"><use href="#i-up" /></svg></a>
+        </div>
+
         <div class="hero-seal" role="img" aria-label="Built around your ambition">
           <svg class="icon" aria-hidden="true"><use href="#i-star" /></svg>
           <svg class="hero-seal-copy" viewBox="0 0 70 26" aria-hidden="true" focusable="false"><text x="35" y="9">BUILT AROUND</text><text x="35" y="21">YOUR AMBITION</text></svg>
         </div>
         </div>
-        <span class="visual-caption">01 / EXALT THE METTLE</span>
+        <a class="product-tag" href="#product-exalt-mettle" aria-label="View Exalt The Mettle product details"><span class="tag-dot"></span><div><strong>EXALT THE METTLE</strong><span>TRI CREATINE · 300 G</span></div><svg class="icon" aria-hidden="true"><use href="#i-up" /></svg></a>
+        <div class="visual-caption"><span>01 / EXALT THE METTLE</span><button class="motion-toggle" type="button" aria-label="Pause 3D animation" aria-pressed="false" title="Pause animation"><svg class="motion-pause" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 5h4v14H7zM14 5h4v14h-4z"/></svg><svg class="motion-play" viewBox="0 0 24 24" aria-hidden="true"><path d="m8 4 12 8-12 8z"/></svg></button></div>
       </div>
     </section>
 
@@ -2114,5 +2177,59 @@ html.menu-motion-active [data-ambient-motion] * { animation-play-state: paused !
   schedule();
 })();
 </script>
+<script id="a1-dimensional-interaction">
+(() => {
+  const root = document.documentElement;
+  const control = document.querySelector('.motion-toggle');
+  const reduced = matchMedia('(prefers-reduced-motion: reduce)');
+  const pointer = matchMedia('(hover: hover) and (pointer: fine)');
+  control?.addEventListener('click', () => {
+    const paused = root.classList.toggle('user-motion-paused');
+    control.setAttribute('aria-pressed', String(paused));
+    control.setAttribute('aria-label', paused ? 'Play 3D animation' : 'Pause 3D animation');
+    control.title = paused ? 'Play animation' : 'Pause animation';
+    if (paused) resetAll();
+  });
+  const targets = [
+    ...[...document.querySelectorAll('.hero-artwork')].map(el => ({el,surface:el.querySelector('.hero-scene'),amount:8})),
+    ...[...document.querySelectorAll('.product-image-wrap')].map(el => ({el,surface:el,amount:6}))
+  ];
+  let pending = 0, latest = null;
+  const tilted = new Set();
+  function reset(target) {
+    target.rect = null;
+    if (!tilted.delete(target)) return;
+    target.surface.style.removeProperty('--tilt-x');
+    target.surface.style.removeProperty('--tilt-y');
+  }
+  function resetAll() {
+    cancelAnimationFrame(pending); pending = 0; latest = null;
+    targets.forEach(reset);
+  }
+  for (const target of targets) {
+    target.el.addEventListener('pointerenter', () => { target.rect = target.el.getBoundingClientRect(); });
+    target.el.addEventListener('pointermove', event => {
+      if (!pointer.matches || reduced.matches || root.classList.contains('user-motion-paused') || root.classList.contains('menu-motion-active')) return;
+      const rect = target.rect ||= target.el.getBoundingClientRect();
+      latest = {target,x:Math.max(-1,Math.min(1,(event.clientX-rect.left)/rect.width*2-1)),y:Math.max(-1,Math.min(1,(event.clientY-rect.top)/rect.height*2-1))};
+      if (!pending) pending = requestAnimationFrame(() => {
+        pending = 0;
+        if (!latest) return;
+        const {target,x,y} = latest;
+        tilted.add(target);
+        target.surface.style.setProperty('--tilt-x', `${(-y*target.amount).toFixed(2)}deg`);
+        target.surface.style.setProperty('--tilt-y', `${(x*target.amount).toFixed(2)}deg`);
+      });
+    }, {passive:true});
+    target.el.addEventListener('pointerleave', () => { if (latest?.target === target) latest = null; reset(target); });
+  }
+  addEventListener('scroll', resetAll, {passive:true});
+  document.addEventListener('a1-menu-state', resetAll);
+  document.addEventListener('visibilitychange', resetAll);
+  reduced.addEventListener?.('change',resetAll);
+  pointer.addEventListener?.('change',resetAll);
+})();
+</script>
+
 </body>
 </html>
